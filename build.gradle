@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.lifetrackr'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+application {
+    // Use this for modern Gradle (works for 7+). If your Gradle version needs .set(), try that later.
+    mainClass = 'com.lifetrackr.Main'
+}
