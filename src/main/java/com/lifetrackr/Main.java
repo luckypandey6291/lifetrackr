@@ -1,10 +1,12 @@
 package com.lifetrackr;
 
-import com.lifetrackr.model.StudyTask;
-import com.lifetrackr.model.User;
+import com.lifetrackr.model.*;
 import com.lifetrackr.repository.impl.InMemoryStudyTaskRepository;
+import com.lifetrackr.repository.impl.InMemoryCodingSessionRepository;
 import com.lifetrackr.service.StudyTaskService;
+import com.lifetrackr.service.CodingSessionService;
 import com.lifetrackr.service.impl.StudyTaskServiceImpl;
+import com.lifetrackr.service.impl.CodingSessionServiceImpl;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,74 +21,135 @@ public class Main {
         String userId = demo.getId();
         System.out.println("Demo user: " + demo);
 
-        // wiring
-        InMemoryStudyTaskRepository repo = new InMemoryStudyTaskRepository();
-        StudyTaskService service = new StudyTaskServiceImpl(repo);
+        // repositories & services
+        InMemoryStudyTaskRepository taskRepo = new InMemoryStudyTaskRepository();
+        InMemoryCodingSessionRepository codingRepo = new InMemoryCodingSessionRepository();
+
+        StudyTaskService taskService = new StudyTaskServiceImpl(taskRepo);
+        CodingSessionService codingService = new CodingSessionServiceImpl(codingRepo);
 
         Scanner sc = new Scanner(System.in);
+
         while (true) {
-            System.out.println("\n1. Add study task");
-            System.out.println("2. List all tasks");
-            System.out.println("3. List pending tasks");
-            System.out.println("4. Delete task by id");
-            System.out.println("5. Show task by id");
+            System.out.println("\n=== MENU ===");
+            System.out.println("1. Add study task");
+            System.out.println("2. List study tasks");
+            System.out.println("3. List pending study tasks");
+            System.out.println("4. Delete study task");
+            System.out.println("5. Show study task by ID");
+
+            System.out.println("----- Coding Sessions -----");
+            System.out.println("6. Add coding session");
+            System.out.println("7. List coding sessions");
+            System.out.println("8. Delete coding session");
+            System.out.println("9. Show coding session by ID");
+
             System.out.println("0. Exit");
+
             System.out.print("Choice: ");
             String choice = sc.nextLine().trim();
 
-            switch (choice) {
-                case "1" -> {
-                    try {
+            try {
+                switch (choice) {
+                    case "1" -> {
                         System.out.print("Subject: ");
                         String subject = sc.nextLine().trim();
                         System.out.print("Topic: ");
                         String topic = sc.nextLine().trim();
                         System.out.print("Due date (YYYY-MM-DD): ");
                         LocalDate due = LocalDate.parse(sc.nextLine().trim());
-                        System.out.print("Priority (1-High,2-Med,3-Low): ");
-                        int p = Integer.parseInt(sc.nextLine().trim());
-                        StudyTask t = service.createTask(userId, subject, topic, due, p);
-                        System.out.println("Created: " + t);
-                    } catch (Exception e) {
-                        System.out.println("Error creating task: " + e.getMessage());
+                        System.out.print("Priority (1=High, 2=Moderate, 3=Low): ");
+                        int priority = Integer.parseInt(sc.nextLine().trim());
+                        StudyTask task = taskService.createTask(userId, subject, topic, due, priority);
+                        System.out.println("Created: " + task);
                     }
-                }
-                case "2" -> {
-                    List<StudyTask> all = service.getTasksForUser(userId);
-                    System.out.println("--- All Tasks (" + all.size() + ") ---");
-                    all.forEach(System.out::println);
-                }
-                case "3" -> {
-                    List<StudyTask> pending = service.getPendingTasksForUser(userId);
-                    System.out.println("--- Pending Tasks (" + pending.size() + ") ---");
-                    pending.forEach(System.out::println);
-                }
-                case "4" -> {
-                    System.out.print("Enter task id to delete: ");
-                    String id = sc.nextLine().trim();
-                    Optional<StudyTask> before = service.getById(id);
-                    if (before.isPresent()) {
-                        service.deleteById(id);
+
+                    case "2" -> {
+                        List<StudyTask> all = taskService.getTasksForUser(userId);
+                        System.out.println("--- All Study Tasks (" + all.size() + ") ---");
+                        all.forEach(System.out::println);
+                    }
+
+                    case "3" -> {
+                        List<StudyTask> pending = taskService.getPendingTasksForUser(userId);
+                        System.out.println("--- Pending Tasks (" + pending.size() + ") ---");
+                        pending.forEach(System.out::println);
+                    }
+
+                    case "4" -> {
+                        System.out.print("Enter task ID to delete: ");
+                        String id = sc.nextLine().trim();
+                        taskService.deleteById(id);
                         System.out.println("Deleted task: " + id);
-                    } else {
-                        System.out.println("Task not found: " + id);
                     }
+
+                    case "5" -> {
+                        System.out.print("Enter Task ID: ");
+                        String id = sc.nextLine().trim();
+                        Optional<StudyTask> t = taskService.getById(id);
+                        t.ifPresentOrElse(
+                                System.out::println,
+                                () -> System.out.println("Task not found!")
+                        );
+                    }
+
+                    // Coding Session menu
+                    case "6" -> {
+                        System.out.print("Problem Name: ");
+                        String prob = sc.nextLine().trim();
+
+                        System.out.print("Platform (LeetCode/Codeforces/etc): ");
+                        String platform = sc.nextLine().trim();
+
+                        System.out.print("Difficulty (EASY/MEDIUM/HARD): ");
+                        Difficulty diff = Difficulty.valueOf(sc.nextLine().trim().toUpperCase());
+
+                        System.out.print("Duration (minutes): ");
+                        int duration = Integer.parseInt(sc.nextLine().trim());
+
+                        System.out.print("Solved? (true/false): ");
+                        boolean solved = Boolean.parseBoolean(sc.nextLine().trim());
+
+                        CodingSession session = codingService.createSession(
+                                userId, prob, platform, diff, duration, solved
+                        );
+
+                        System.out.println("Session added: " + session);
+                    }
+
+                    case "7" -> {
+                        List<CodingSession> sessions = codingService.getSessionsForUser(userId);
+                        System.out.println("--- Coding Sessions (" + sessions.size() + ") ---");
+                        sessions.forEach(System.out::println);
+                    }
+
+                    case "8" -> {
+                        System.out.print("Enter Coding Session ID to delete: ");
+                        String id = sc.nextLine().trim();
+                        codingService.deleteById(id);
+                        System.out.println("Deleted coding session: " + id);
+                    }
+
+                    case "9" -> {
+                        System.out.print("Enter Coding Session ID: ");
+                        String id = sc.nextLine().trim();
+                        Optional<CodingSession> s = codingService.getById(id);
+                        s.ifPresentOrElse(
+                                System.out::println,
+                                () -> System.out.println("Coding session not found!")
+                        );
+                    }
+
+                    case "0" -> {
+                        System.out.println("Bye!");
+                        sc.close();
+                        return;
+                    }
+
+                    default -> System.out.println("Invalid choice!");
                 }
-                case "5" -> {
-                    System.out.print("Enter task id to show: ");
-                    String id = sc.nextLine().trim();
-                    Optional<StudyTask> t = service.getById(id);
-                    t.ifPresentOrElse(
-                            task -> System.out.println("Task: " + task),
-                            () -> System.out.println("Not found")
-                    );
-                }
-                case "0" -> {
-                    System.out.println("Bye!");
-                    sc.close();
-                    return;
-                }
-                default -> System.out.println("Invalid choice");
+            } catch (Exception e) {
+                System.out.println("⚠ Error: " + e.getMessage());
             }
         }
     }
