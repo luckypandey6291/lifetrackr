@@ -1,16 +1,20 @@
 package com.lifetrackr;
 
 import com.lifetrackr.model.*;
-import com.lifetrackr.repository.impl.InMemoryStudyTaskRepository;
-import com.lifetrackr.repository.impl.InMemoryCodingSessionRepository;
-import com.lifetrackr.repository.impl.InMemoryWorkoutRepository;
+import com.lifetrackr.repository.impl.FileBasedStudyTaskRepository;
+import com.lifetrackr.repository.impl.FileBasedCodingSessionRepository;
+import com.lifetrackr.repository.impl.FileBasedWorkoutRepository;
 import com.lifetrackr.service.StudyTaskService;
 import com.lifetrackr.service.CodingSessionService;
 import com.lifetrackr.service.WorkoutService;
 import com.lifetrackr.service.impl.StudyTaskServiceImpl;
 import com.lifetrackr.service.impl.CodingSessionServiceImpl;
 import com.lifetrackr.service.impl.WorkoutServiceImpl;
+import com.lifetrackr.util.JsonUtil;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -18,16 +22,62 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== LifeTrackr Console App ===");
+        System.out.println("=== LifeTrackr (File-backed) ===");
 
-        User demo = new User("Lucky", "lucky@example.com");
+        // --- data file paths ---
+        String base = "data";
+        String userFilePath = base + "/user.json";
+        String studyFile = base + "/study_tasks.json";
+        String codingFile = base + "/coding_sessions.json";
+        String workoutFile = base + "/workouts.json";
+
+        // Ensure data directory exists
+        new File(base).mkdirs();
+
+        // --- load or create demo user and persist to data/user.json ---
+        User demo = null;
+        File userFile = new File(userFilePath);
+        try {
+            if (userFile.exists()) {
+                // try load existing user
+                try (FileReader fr = new FileReader(userFile)) {
+                    demo = JsonUtil.gson().fromJson(fr, User.class);
+                } catch (Exception e) {
+                    System.out.println("⚠ Warning: failed to parse user.json -> " + e.getMessage());
+                    demo = null;
+                }
+
+                if (demo != null) {
+                    System.out.println("Loaded demo user from file: " + demo);
+                } else {
+                    System.out.println("user.json existed but contained no valid user — recreating.");
+                    demo = new User("Lucky", "lucky@example.com");
+                    try (FileWriter fw = new FileWriter(userFile)) {
+                        JsonUtil.gson().toJson(demo, fw);
+                    }
+                    System.out.println("Created and saved demo user: " + demo);
+                }
+            } else {
+                // create and save demo user
+                demo = new User("Lucky", "lucky@example.com");
+                try (FileWriter fw = new FileWriter(userFile)) {
+                    JsonUtil.gson().toJson(demo, fw);
+                }
+                System.out.println("Created and saved demo user: " + demo);
+            }
+        } catch (Exception e) {
+            System.out.println("⚠ Warning: could not read/write user file: " + e.getMessage());
+            // fallback to in-memory demo user
+            demo = new User("Lucky", "lucky@example.com");
+            System.out.println("Using temporary demo user: " + demo);
+        }
+
         String userId = demo.getId();
-        System.out.println("Demo user: " + demo);
 
-        // repositories & services
-        InMemoryStudyTaskRepository taskRepo = new InMemoryStudyTaskRepository();
-        InMemoryCodingSessionRepository codingRepo = new InMemoryCodingSessionRepository();
-        InMemoryWorkoutRepository workoutRepo = new InMemoryWorkoutRepository();
+        // --- repositories (file-backed) ---
+        FileBasedStudyTaskRepository taskRepo = new FileBasedStudyTaskRepository(studyFile);
+        FileBasedCodingSessionRepository codingRepo = new FileBasedCodingSessionRepository(codingFile);
+        FileBasedWorkoutRepository workoutRepo = new FileBasedWorkoutRepository(workoutFile);
 
         StudyTaskService taskService = new StudyTaskServiceImpl(taskRepo);
         CodingSessionService codingService = new CodingSessionServiceImpl(codingRepo);
@@ -36,7 +86,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
-            System.out.println("\n=== MENU ===");
+            System.out.println("\\n=== MENU ===");
             System.out.println("1. Add study task");
             System.out.println("2. List study tasks");
             System.out.println("3. List pending study tasks");

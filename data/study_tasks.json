@@ -1,0 +1,29 @@
+[
+  {
+    "id": "8a28445d-7b71-49de-a949-2a0b90e84cac",
+    "userId": "a754893a-4df8-43b6-b0f8-3bd616ec0cf0",
+    "subject": "maths",
+    "topic": "probability",
+    "dueDate": "2025-12-12",
+    "status": "PENDING",
+    "priority": 1
+  },
+  {
+    "id": "8f3dd3e8-17e6-436b-9b10-1da263c1bade",
+    "userId": "3f537ddf-81b7-4604-adb1-fc6c1b1ce698",
+    "subject": "AI",
+    "topic": "Agents and Environment",
+    "dueDate": "2025-12-12",
+    "status": "PENDING",
+    "priority": 2
+  },
+  {
+    "id": "71146bed-ac59-4255-bdc2-46e08d8836c6",
+    "userId": "c1c6e991-8152-4d0b-b101-3aafbc17b5d5",
+    "subject": "AI",
+    "topic": "NLP",
+    "dueDate": "2025-12-12",
+    "status": "PENDING",
+    "priority": 2
+  }
+]
