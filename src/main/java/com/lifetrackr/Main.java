@@ -1,4 +1,8 @@
 package com.lifetrackr;
+import com.lifetrackr.service.StudyAnalyticsService;
+import com.lifetrackr.service.CodingAnalyticsService;
+import com.lifetrackr.service.WorkoutAnalyticsService;
+
 
 import com.lifetrackr.model.*;
 import com.lifetrackr.repository.impl.FileBasedStudyTaskRepository;
@@ -75,6 +79,8 @@ public class Main {
         String userId = demo.getId();
 
         // --- repositories (file-backed) ---
+
+
         FileBasedStudyTaskRepository taskRepo = new FileBasedStudyTaskRepository(studyFile);
         FileBasedCodingSessionRepository codingRepo = new FileBasedCodingSessionRepository(codingFile);
         FileBasedWorkoutRepository workoutRepo = new FileBasedWorkoutRepository(workoutFile);
@@ -82,6 +88,10 @@ public class Main {
         StudyTaskService taskService = new StudyTaskServiceImpl(taskRepo);
         CodingSessionService codingService = new CodingSessionServiceImpl(codingRepo);
         WorkoutService workoutService = new WorkoutServiceImpl(workoutRepo);
+
+        StudyAnalyticsService studyAnalytics = new StudyAnalyticsService(taskService);
+        CodingAnalyticsService codingAnalytics = new CodingAnalyticsService(codingService);
+        WorkoutAnalyticsService workoutAnalytics = new WorkoutAnalyticsService(workoutService);
 
         Scanner sc = new Scanner(System.in);
 
@@ -104,6 +114,9 @@ public class Main {
             System.out.println("11. List workouts");
             System.out.println("12. Delete workout");
             System.out.println("13. Show workout by ID");
+
+            System.out.println("------Analytics------");
+            System.out.println("14. Analytics Dashboard");
 
             System.out.println("0. Exit");
 
@@ -238,6 +251,54 @@ public class Main {
                                 () -> System.out.println("Workout not found!")
                         );
                     }
+                    case "14" -> {
+                        while (true) {
+                            System.out.println("\n=== Analytics Dashboard ===");
+                            System.out.println("1. Study Stats");
+                            System.out.println("2. Coding Stats");
+                            System.out.println("3. Workout Stats");
+                            System.out.println("0. Back");
+
+                            System.out.print("Choice: ");
+                            String ch = sc.nextLine().trim();
+
+                            if (ch.equals("1")) {
+                                System.out.println("\n--- Study Analytics ---");
+                                System.out.println("Total tasks: " + studyAnalytics.getTotalTasks(userId));
+                                System.out.println("Pending tasks: " + studyAnalytics.getPendingTasks(userId));
+                                System.out.println("Completed tasks: " + studyAnalytics.getCompletedTasks(userId));
+                                System.out.println("Overdue tasks: " + studyAnalytics.getOverdueTasks(userId));
+                                System.out.println("High priority tasks: " + studyAnalytics.getHighPriorityCount(userId));
+
+                            } else if (ch.equals("2")) {
+                                System.out.println("\n--- Coding Analytics ---");
+                                System.out.println("Total sessions: " + codingAnalytics.getTotalSessions(userId));
+                                System.out.println("Solved: " + codingAnalytics.getSolvedCount(userId));
+                                System.out.println("Unsolved: " + codingAnalytics.getUnsolvedCount(userId));
+                                System.out.println("Total minutes: " + codingAnalytics.getTotalMinutes(userId));
+                                System.out.println("Easy: " + codingAnalytics.getEasyCount(userId));
+                                System.out.println("Medium: " + codingAnalytics.getMediumCount(userId));
+                                System.out.println("Hard: " + codingAnalytics.getHardCount(userId));
+                                System.out.println("Today's minutes: " + codingAnalytics.getTodayMinutes(userId));
+                                System.out.println("Coding streak: " + codingAnalytics.getCodingStreak(userId));
+
+                            } else if (ch.equals("3")) {
+                                System.out.println("\n--- Workout Analytics ---");
+                                System.out.println("Total workouts: " + workoutAnalytics.getTotalWorkouts(userId));
+                                System.out.println("Total minutes: " + workoutAnalytics.getTotalMinutes(userId));
+                                System.out.println("Today's minutes: " + workoutAnalytics.getTodayMinutes(userId));
+                                System.out.println("Weekly minutes (last 7 days): " + workoutAnalytics.getWeeklyMinutes(userId));
+                                System.out.println("Workout streak: " + workoutAnalytics.getWorkoutStreak(userId));
+                                System.out.println("Best workout day: " + workoutAnalytics.getBestWorkoutDay(userId));
+
+                            } else if (ch.equals("0")) {
+                                break;
+                            } else {
+                                System.out.println("Invalid choice!");
+                            }
+                        }
+                    }
+
 
                     case "0" -> {
                         System.out.println("Bye!");
