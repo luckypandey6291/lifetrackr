@@ -1,0 +1,34 @@
+{
+  "coding": {
+    "totalSessions": 0,
+    "todayMinutes": 0,
+    "solved": 0,
+    "medium": 0,
+    "hard": 0,
+    "streak": 0,
+    "unsolved": 0,
+    "easy": 0
+  },
+  "study": {
+    "pendingTasks": 1,
+    "completedTasks": 0,
+    "highPriority": 1,
+    "overdueTasks": 1,
+    "totalTasks": 1
+  },
+  "workout": {
+    "totalMinutes": 0,
+    "weeklyMinutes": 0,
+    "todayMinutes": 0,
+    "totalWorkouts": 0,
+    "streak": 0
+  },
+  "productivityScore": {
+    "codingScore": 0,
+    "studyScore": 0,
+    "streakBonus": 0,
+    "totalScore": 0,
+    "workoutScore": 0
+  },
+  "userId": "a754893a-4df8-43b6-b0f8-3bd616ec0cf0"
+}

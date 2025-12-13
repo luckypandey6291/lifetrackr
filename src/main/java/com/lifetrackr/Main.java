@@ -1,4 +1,5 @@
 package com.lifetrackr;
+import com.lifetrackr.service.AnalyticsExportService;
 import com.lifetrackr.service.StudyAnalyticsService;
 import com.lifetrackr.service.CodingAnalyticsService;
 import com.lifetrackr.service.WorkoutAnalyticsService;
@@ -123,6 +124,9 @@ public class Main {
 
             System.out.println("-------Overall score----");
             System.out.println("15. Productivity score");
+
+            System.out.println("16. Export Analytics (JSON)");
+
 
             System.out.println("0. Exit");
 
@@ -328,6 +332,29 @@ public class Main {
                         else if (score >= 50) System.out.println("🙂 Decent effort, push a little more!");
                         else System.out.println("😴 Low productivity day — tomorrow is yours!");
                     }
+
+                    case "16" -> {
+                        ProductivityScoreService scoreService = new ProductivityScoreService(
+                                studyAnalytics,
+                                codingAnalytics,
+                                workoutAnalytics,
+                                userId
+                        );
+
+                        AnalyticsExportService exportService = new AnalyticsExportService(
+                                studyAnalytics,
+                                codingAnalytics,
+                                workoutAnalytics,
+                                scoreService,
+                                userId
+                        );
+
+                        String outPath = "data/analytics_export.json";
+                        exportService.exportToJson(outPath);
+
+                        System.out.println("Analytics exported successfully to: " + outPath);
+                    }
+
 
 
 
