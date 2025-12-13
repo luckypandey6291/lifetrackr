@@ -2,6 +2,9 @@ package com.lifetrackr;
 import com.lifetrackr.service.StudyAnalyticsService;
 import com.lifetrackr.service.CodingAnalyticsService;
 import com.lifetrackr.service.WorkoutAnalyticsService;
+import com.lifetrackr.service.ProductivityScoreService;
+
+
 
 
 import com.lifetrackr.model.*;
@@ -117,6 +120,9 @@ public class Main {
 
             System.out.println("------Analytics------");
             System.out.println("14. Analytics Dashboard");
+
+            System.out.println("-------Overall score----");
+            System.out.println("15. Productivity score");
 
             System.out.println("0. Exit");
 
@@ -298,6 +304,31 @@ public class Main {
                             }
                         }
                     }
+
+                    case "15" -> {
+                        ProductivityScoreService scoreService = new ProductivityScoreService(
+                                studyAnalytics,
+                                codingAnalytics,
+                                workoutAnalytics,
+                                userId
+                        );
+
+                        System.out.println("\n=== Productivity Score ===");
+                        System.out.println("Study Score:   " + scoreService.getStudyScore() + "/40");
+                        System.out.println("Coding Score:  " + scoreService.getCodingScore() + "/40");
+                        System.out.println("Workout Score: " + scoreService.getWorkoutScore() + "/20");
+                        System.out.println("Streak Bonus:  " + scoreService.getStreakBonus());
+
+                        System.out.println("-----------------------------");
+                        System.out.println("TOTAL SCORE:   " + scoreService.getTotalScore() + "/100");
+
+                        int score = scoreService.getTotalScore();
+                        if (score >= 85) System.out.println("🔥 Outstanding day! Keep dominating!");
+                        else if (score >= 70) System.out.println("💪 Great progress, stay consistent!");
+                        else if (score >= 50) System.out.println("🙂 Decent effort, push a little more!");
+                        else System.out.println("😴 Low productivity day — tomorrow is yours!");
+                    }
+
 
 
                     case "0" -> {
