@@ -4,7 +4,8 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class StudyTask {
-    private final String id;
+
+    private String id;   // ❗ removed final
     private String userId;
     private String subject;
     private String topic;
@@ -22,17 +23,28 @@ public class StudyTask {
         this.status = TaskStatus.PENDING;
     }
 
+    // ===== getters & setters =====
+
     public String getId() { return id; }
+
+    // 🔥 REQUIRED FOR SQLITE / DB MAPPING
+    public void setId(String id) { this.id = id; }
+
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
+
     public String getSubject() { return subject; }
     public void setSubject(String subject) { this.subject = subject; }
+
     public String getTopic() { return topic; }
     public void setTopic(String topic) { this.topic = topic; }
+
     public LocalDate getDueDate() { return dueDate; }
     public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
+
     public TaskStatus getStatus() { return status; }
     public void setStatus(TaskStatus status) { this.status = status; }
+
     public int getPriority() { return priority; }
     public void setPriority(int priority) { this.priority = priority; }
 
@@ -49,3 +61,4 @@ public class StudyTask {
                 '}';
     }
 }
+

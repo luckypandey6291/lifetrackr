@@ -1,4 +1,7 @@
 package com.lifetrackr;
+import com.lifetrackr.repository.StudyTaskRepository;
+import com.lifetrackr.repository.impl.SQLiteStudyTaskRepository;
+
 import com.lifetrackr.service.AnalyticsExportService;
 import com.lifetrackr.service.StudyAnalyticsService;
 import com.lifetrackr.service.CodingAnalyticsService;
@@ -85,7 +88,7 @@ public class Main {
         // --- repositories (file-backed) ---
 
 
-        FileBasedStudyTaskRepository taskRepo = new FileBasedStudyTaskRepository(studyFile);
+        StudyTaskRepository taskRepo = new SQLiteStudyTaskRepository();
         FileBasedCodingSessionRepository codingRepo = new FileBasedCodingSessionRepository(codingFile);
         FileBasedWorkoutRepository workoutRepo = new FileBasedWorkoutRepository(workoutFile);
 
