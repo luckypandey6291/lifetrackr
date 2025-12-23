@@ -4,7 +4,8 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class WorkoutEntry {
-    private final String id;
+
+    private String id;   // ❗ removed final
     private String userId;
     private WorkoutType type;
     private String description; // e.g., "Chest + Triceps"
@@ -21,15 +22,25 @@ public class WorkoutEntry {
         this.date = date;
     }
 
+    // ===== getters & setters =====
+
     public String getId() { return id; }
+
+    // 🔥 REQUIRED for SQLite / DB hydration
+    public void setId(String id) { this.id = id; }
+
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
+
     public WorkoutType getType() { return type; }
     public void setType(WorkoutType type) { this.type = type; }
+
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
     public int getDurationMinutes() { return durationMinutes; }
     public void setDurationMinutes(int durationMinutes) { this.durationMinutes = durationMinutes; }
+
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }
 
