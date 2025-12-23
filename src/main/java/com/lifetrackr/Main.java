@@ -1,4 +1,6 @@
 package com.lifetrackr;
+import com.lifetrackr.repository.CodingSessionRepository;
+import com.lifetrackr.repository.impl.SQLiteCodingSessionRepository;
 import com.lifetrackr.repository.StudyTaskRepository;
 import com.lifetrackr.repository.impl.SQLiteStudyTaskRepository;
 
@@ -12,8 +14,6 @@ import com.lifetrackr.service.ProductivityScoreService;
 
 
 import com.lifetrackr.model.*;
-import com.lifetrackr.repository.impl.FileBasedStudyTaskRepository;
-import com.lifetrackr.repository.impl.FileBasedCodingSessionRepository;
 import com.lifetrackr.repository.impl.FileBasedWorkoutRepository;
 import com.lifetrackr.service.StudyTaskService;
 import com.lifetrackr.service.CodingSessionService;
@@ -89,7 +89,8 @@ public class Main {
 
 
         StudyTaskRepository taskRepo = new SQLiteStudyTaskRepository();
-        FileBasedCodingSessionRepository codingRepo = new FileBasedCodingSessionRepository(codingFile);
+        CodingSessionRepository codingRepo = new SQLiteCodingSessionRepository();
+
         FileBasedWorkoutRepository workoutRepo = new FileBasedWorkoutRepository(workoutFile);
 
         StudyTaskService taskService = new StudyTaskServiceImpl(taskRepo);

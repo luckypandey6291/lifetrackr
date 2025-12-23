@@ -4,10 +4,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class CodingSession {
-    private final String id;
+
+    private String id;   // ❗ removed final
     private String userId;
     private String problemName;
-    private String platform; 
+    private String platform;
     private Difficulty difficulty;
     private int durationMinutes;
     private boolean solved;
@@ -25,7 +26,12 @@ public class CodingSession {
         this.createdAt = LocalDateTime.now();
     }
 
+    // ===== getters =====
     public String getId() { return id; }
+
+    // 🔥 REQUIRED for SQLite / DB hydration
+    public void setId(String id) { this.id = id; }
+
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
 
@@ -46,6 +52,9 @@ public class CodingSession {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 
+    // 🔥 REQUIRED for SQLite / DB hydration
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
     @Override
     public String toString() {
         return "CodingSession{" +
@@ -60,3 +69,4 @@ public class CodingSession {
                 '}';
     }
 }
+
