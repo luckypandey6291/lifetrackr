@@ -1,4 +1,7 @@
 package com.lifetrackr;
+import com.lifetrackr.repository.UserRepository;
+import com.lifetrackr.repository.impl.SQLiteUserRepository;
+
 import com.lifetrackr.repository.WorkoutRepository;
 import com.lifetrackr.repository.impl.SQLiteWorkoutRepository;
 
@@ -23,11 +26,7 @@ import com.lifetrackr.service.WorkoutService;
 import com.lifetrackr.service.impl.StudyTaskServiceImpl;
 import com.lifetrackr.service.impl.CodingSessionServiceImpl;
 import com.lifetrackr.service.impl.WorkoutServiceImpl;
-import com.lifetrackr.util.JsonUtil;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -35,55 +34,15 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== LifeTrackr (File-backed) ===");
+        System.out.println("=== LifeTrackr (SQLite-backed) ===");
 
         // --- data file paths ---
-        String base = "data";
-        String userFilePath = base + "/user.json";
-        String studyFile = base + "/study_tasks.json";
-        String codingFile = base + "/coding_sessions.json";
-        String workoutFile = base + "/workouts.json";
+        UserRepository userRepo = new SQLiteUserRepository();
 
-        // Ensure data directory exists
-        new File(base).mkdirs();
+        User demo = userRepo.findByUsername("Lucky")
+                .orElseGet(() -> userRepo.save(new User("Lucky", "lucky@example.com")));
 
-        // --- load or create demo user and persist to data/user.json ---
-        User demo = null;
-        File userFile = new File(userFilePath);
-        try {
-            if (userFile.exists()) {
-                // try load existing user
-                try (FileReader fr = new FileReader(userFile)) {
-                    demo = JsonUtil.gson().fromJson(fr, User.class);
-                } catch (Exception e) {
-                    System.out.println("⚠ Warning: failed to parse user.json -> " + e.getMessage());
-                    demo = null;
-                }
-
-                if (demo != null) {
-                    System.out.println("Loaded demo user from file: " + demo);
-                } else {
-                    System.out.println("user.json existed but contained no valid user — recreating.");
-                    demo = new User("Lucky", "lucky@example.com");
-                    try (FileWriter fw = new FileWriter(userFile)) {
-                        JsonUtil.gson().toJson(demo, fw);
-                    }
-                    System.out.println("Created and saved demo user: " + demo);
-                }
-            } else {
-                // create and save demo user
-                demo = new User("Lucky", "lucky@example.com");
-                try (FileWriter fw = new FileWriter(userFile)) {
-                    JsonUtil.gson().toJson(demo, fw);
-                }
-                System.out.println("Created and saved demo user: " + demo);
-            }
-        } catch (Exception e) {
-            System.out.println("⚠ Warning: could not read/write user file: " + e.getMessage());
-            // fallback to in-memory demo user
-            demo = new User("Lucky", "lucky@example.com");
-            System.out.println("Using temporary demo user: " + demo);
-        }
+        System.out.println("Loaded user: " + demo);
 
         String userId = demo.getId();
 

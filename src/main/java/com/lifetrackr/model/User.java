@@ -1,10 +1,10 @@
-package com.lifetrackr.model; // better to keep models in subpackage
-// If you prefer top-level package, change to: package com.lifetrackr;
+package com.lifetrackr.model;
 
 import java.util.UUID;
 
 public class User {
-    private final String id;
+
+    private String id;   // ❗ removed final
     private String username;
     private String email;
 
@@ -14,9 +14,16 @@ public class User {
         this.email = email;
     }
 
+    // ===== getters & setters =====
+
     public String getId() { return id; }
+
+    // 🔥 REQUIRED for SQLite / DB hydration
+    public void setId(String id) { this.id = id; }
+
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
+
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
@@ -29,3 +36,4 @@ public class User {
                 '}';
     }
 }
+
