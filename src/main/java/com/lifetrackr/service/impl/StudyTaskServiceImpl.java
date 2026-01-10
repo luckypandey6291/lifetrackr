@@ -1,5 +1,7 @@
 package com.lifetrackr.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.lifetrackr.model.StudyTask;
 import com.lifetrackr.repository.StudyTaskRepository;
 import com.lifetrackr.service.StudyTaskService;
@@ -8,6 +10,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+
+@Service
 public class StudyTaskServiceImpl implements StudyTaskService {
 
     private final StudyTaskRepository repository;

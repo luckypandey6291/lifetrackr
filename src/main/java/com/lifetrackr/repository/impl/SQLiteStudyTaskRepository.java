@@ -1,5 +1,7 @@
 package com.lifetrackr.repository.impl;
 
+import org.springframework.stereotype.Repository;
+
 import com.lifetrackr.model.TaskStatus;
 
 
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class SQLiteStudyTaskRepository implements StudyTaskRepository {
 
     private final Connection conn = Database.getConnection();
