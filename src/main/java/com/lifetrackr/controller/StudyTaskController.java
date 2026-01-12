@@ -35,6 +35,11 @@ public class StudyTaskController {
                 req.getPriority()
         );
     }
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable String id) {
+        studyTaskService.deleteById(id);
+    }
+
 }
 
 

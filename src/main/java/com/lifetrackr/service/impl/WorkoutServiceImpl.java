@@ -8,7 +8,9 @@ import com.lifetrackr.service.WorkoutService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
+@Service
 public class WorkoutServiceImpl implements WorkoutService {
 
     private final WorkoutRepository repository;

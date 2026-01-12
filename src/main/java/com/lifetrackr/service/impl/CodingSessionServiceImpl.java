@@ -7,7 +7,9 @@ import com.lifetrackr.service.CodingSessionService;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CodingSessionServiceImpl implements CodingSessionService {
 
     private final CodingSessionRepository repository;
