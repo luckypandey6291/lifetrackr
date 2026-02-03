@@ -13,3 +13,22 @@
 
 # Ignore Gradle build output directory
 build
+
+# ===== Java / Gradle =====
+/build
+/.gradle
+*.class
+
+# ===== IDE =====
+/.idea
+/.vscode
+
+# ===== OS =====
+.DS_Store
+
+# ===== Database =====
+*.db
+
+# ===== Logs =====
+*.log
+

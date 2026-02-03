@@ -3,13 +3,13 @@ package com.lifetrackr.service.impl;
 import org.springframework.stereotype.Service;
 
 import com.lifetrackr.model.StudyTask;
+import com.lifetrackr.model.TaskStatus;
 import com.lifetrackr.repository.StudyTaskRepository;
 import com.lifetrackr.service.StudyTaskService;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 
 @Service
 public class StudyTaskServiceImpl implements StudyTaskService {
@@ -40,6 +40,45 @@ public class StudyTaskServiceImpl implements StudyTaskService {
     public Optional<StudyTask> getById(String id) {
         return repository.findById(id);
     }
+
+    /* ================= NEW CODE START ================= */
+
+    // ✅ UPDATE TASK
+    @Override
+    public StudyTask updateTask(
+            String id,
+            String subject,
+            String topic,
+            LocalDate dueDate,
+            int priority
+    ) {
+        StudyTask task = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        task.setSubject(subject);
+        task.setTopic(topic);
+        task.setDueDate(dueDate);
+        task.setPriority(priority);
+
+        return repository.save(task);
+    }
+
+    // ✅ TOGGLE STATUS (PENDING ↔ DONE)
+   @Override
+public StudyTask toggleStatus(String id) {
+    StudyTask task = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Task not found"));
+
+    if (task.getStatus() == TaskStatus.PENDING) {
+        task.setStatus(TaskStatus.COMPLETED);
+    } else {
+        task.setStatus(TaskStatus.PENDING);
+    }
+
+    return repository.save(task);
+}
+
+    /* ================= NEW CODE END ================= */
 
     @Override
     public void deleteById(String id) {

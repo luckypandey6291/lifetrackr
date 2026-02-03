@@ -7,9 +7,34 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StudyTaskService {
-    StudyTask createTask(String userId, String subject, String topic, LocalDate dueDate, int priority);
+
+    StudyTask createTask(
+            String userId,
+            String subject,
+            String topic,
+            LocalDate dueDate,
+            int priority
+    );
+
     List<StudyTask> getTasksForUser(String userId);
+
     List<StudyTask> getPendingTasksForUser(String userId);
+
     Optional<StudyTask> getById(String id);
+
+    // 🔥 NEW: UPDATE TASK
+    StudyTask updateTask(
+            String id,
+            String subject,
+            String topic,
+            LocalDate dueDate,
+            int priority
+    );
+
+    // 🔥 NEW: TOGGLE STATUS
+    StudyTask toggleStatus(String id);
+
     void deleteById(String id);
 }
+
+

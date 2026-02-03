@@ -8,7 +8,7 @@ import com.lifetrackr.service.CodingSessionService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/coding-sessions")
 public class CodingSessionController {

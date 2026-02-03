@@ -1,17 +1,34 @@
 package com.lifetrackr.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Entity
+@Table(name = "study_tasks")
 public class StudyTask {
 
-    private String id;   // ❗ removed final
+    @Id
+    private String id;
+
     private String userId;
     private String subject;
     private String topic;
     private LocalDate dueDate;
+
+    @Enumerated(EnumType.STRING)
     private TaskStatus status;
+
     private int priority; // 1 = High, 2 = Medium, 3 = Low
+
+    // 🔥 REQUIRED BY JPA (VERY IMPORTANT)
+    public StudyTask() {
+    }
 
     public StudyTask(String userId, String subject, String topic, LocalDate dueDate, int priority) {
         this.id = UUID.randomUUID().toString();
@@ -27,7 +44,6 @@ public class StudyTask {
 
     public String getId() { return id; }
 
-    // 🔥 REQUIRED FOR SQLITE / DB MAPPING
     public void setId(String id) { this.id = id; }
 
     public String getUserId() { return userId; }
@@ -61,4 +77,3 @@ public class StudyTask {
                 '}';
     }
 }
-
