@@ -1,3 +1,6 @@
+* {
+    box-sizing: border-box;
+}
 body {
     font-family: Arial, sans-serif;
     background: #f4f6f8;
@@ -19,6 +22,8 @@ input, select, button {
 }
 
 button {
+    height: 42px;
+    font-size: 15px;
     background-color: #3498db;
     color: white;
     border: none;
@@ -37,12 +42,13 @@ ul {
 
 .task-item {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    margin-top: 8px;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    margin-top: 10px;
     background: #f9f9f9;
-    border-radius: 6px;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
 }
 
 .task-item button {
@@ -57,3 +63,81 @@ ul {
     color: #27ae60;
 }
 
+/* ---------- Status Badges ---------- */
+.status {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status.pending {
+    background: #fff3cd;
+    color: #e67e22;
+}
+
+.status.completed {
+    background: #e8f5e9;
+    color: #27ae60;
+}
+
+.status.in-progress {
+    background: #e3f2fd;
+    color: #3498db;
+}
+
+.status.cancelled {
+    background: #fdecea;
+    color: #e74c3c;
+}
+
+.task-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.task-actions button {
+    flex: 1;
+    padding: 8px;
+    font-size: 13px;
+}
+
+.task-actions .edit {
+    background-color: #f1c40f;
+    color: #333;
+}
+
+.task-actions .toggle {
+    background-color: #2ecc71;
+}
+
+.task-actions .delete {
+    background-color: #e74c3c;
+}
+
+.edit-mode {
+    border: 2px dashed #f1c40f;
+    background: #fffdf5;
+}
+/* ---------- Form Polish ---------- */
+section {
+    margin-bottom: 25px;
+    padding: 16px;
+}
+
+section h2 {
+    margin-bottom: 15px;
+}
+
+input {
+    height: 40px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #3498db;
+}

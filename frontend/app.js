@@ -11,13 +11,18 @@ function addTask() {
     localStorage.setItem("userId", userId);
 
     const taskId = document.getElementById("taskId").value;
+    let priority = Number(document.getElementById("priority").value);
+
+// Clamp priority between 1 and 3
+if (priority < 1) priority = 1;
+if (priority > 3) priority = 3;
 
     const data = {
         userId: userId,
         subject: document.getElementById("subject").value,
         topic: document.getElementById("topic").value,
         dueDate: document.getElementById("dueDate").value,
-        priority: Number(document.getElementById("priority").value)
+        priority: priority
     };
 
     const method = taskId ? "PUT" : "POST";
@@ -55,14 +60,24 @@ function loadTasks() {
 
             tasks.forEach(task => {
                 const li = document.createElement("li");
+                li.className = "task-item";
+
+                const statusClass = task.status.toLowerCase().replace("_", "-");
 
                 li.innerHTML = `
-                    <b>${task.subject}</b> - ${task.topic}
-                    <br>Status: ${task.status}
-                    <br>
-                    <button onclick="editTask('${task.id}')">Edit</button>
-                    <button onclick="toggleStatus('${task.id}')">Toggle Status</button>
-                    <button onclick="deleteTask('${task.id}')">Delete</button>
+                    <div>
+                        <strong>${task.subject}</strong> - ${task.topic}
+                    </div>
+
+                    <span class="status ${statusClass}">
+                        ${task.status}
+                    </span>
+
+                    <div class="task-actions">
+                        <button class="edit" onclick="editTask('${task.id}')">Edit</button>
+                        <button class="toggle" onclick="toggleStatus('${task.id}')">Toggle</button>
+                        <button class="delete" onclick="deleteTask('${task.id}')">Delete</button>
+                    </div>
                 `;
 
                 ul.appendChild(li);
@@ -80,9 +95,12 @@ function editTask(id) {
             document.getElementById("topic").value = task.topic;
             document.getElementById("dueDate").value = task.dueDate;
             document.getElementById("priority").value = task.priority;
+
+            // 🔥 EDIT MODE UX
+            document.querySelector("section").classList.add("edit-mode");
+            document.getElementById("submitBtn").innerText = "Update Task";
         });
 }
-
 /* ---------- Toggle Status ---------- */
 function toggleStatus(id) {
     fetch(`${API_BASE}/${id}/status`, { method: "PATCH" })
@@ -103,6 +121,10 @@ function resetForm() {
     document.getElementById("topic").value = "";
     document.getElementById("dueDate").value = "";
     document.getElementById("priority").value = "1";
+
+    // 🔥 EXIT EDIT MODE
+    document.querySelector("section").classList.remove("edit-mode");
+    document.getElementById("submitBtn").innerText = "Add Task";
 }
 
 /* ---------- On Load ---------- */
